@@ -1,0 +1,15 @@
+# Never ship secrets or local environments into the image
+**/.env
+**/.env.*
+!**/.env.example
+**/.venv
+**/.venv*
+**/__pycache__
+**/*.pyc
+**/node_modules
+frontend/dist
+.git
+e2e
+docs
+# local file storage (may contain ID documents)
+**/uploads
