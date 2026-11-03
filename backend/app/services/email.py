@@ -37,8 +37,8 @@ def send_welcome_email(to_email: str, full_name: str) -> None:
               <h2 style="color:#1a1a3e;">Welcome to Zenfort Markets, {full_name}!</h2>
               <p>Your account has been created successfully. You can now log in and explore
                  our multi-currency crypto investment platform.</p>
-              <p>If you have any questions, reach out to <a href="mailto:support@zenfortmarkets.com">
-                 support@zenfortmarkets.com</a>.</p>
+              <p>If you have any questions, reach out to <a href="mailto:support@serenholdmarkets.online">
+                 support@serenholdmarkets.online</a>.</p>
               <hr/>
               <small style="color:#888;">Zenfort Markets — Trade Smarter. Grow Stronger.</small>
             </div>

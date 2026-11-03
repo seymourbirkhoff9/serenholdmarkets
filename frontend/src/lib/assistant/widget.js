@@ -11,7 +11,7 @@ import { icon } from '../icons.js';
 import { STARTERS, TOPICS } from './kb.js';
 import { match } from './match.js';
 
-const SUPPORT_EMAIL = 'support@zenfortmarkets.online';
+const SUPPORT_EMAIL = 'support@serenholdmarkets.online';
 const byId = Object.fromEntries(TOPICS.map((t) => [t.id, t]));
 
 export function mountAssistant({ user = null } = {}) {
