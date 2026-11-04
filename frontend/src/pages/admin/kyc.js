@@ -67,7 +67,7 @@ export default async function kyc(outlet) {
     if (blobUrl) URL.revokeObjectURL(blobUrl);
     if (done) {
       toast(done === 'VERIFIED' ? `${u.full_name} is verified.` : `${u.full_name} was asked for a new document.`);
-      window.dispatchEvent(new Event('zf:queues-changed'));
+      window.dispatchEvent(new Event('sh:queues-changed'));
       load();
     }
   });

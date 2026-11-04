@@ -3,7 +3,7 @@ import { html } from '../../lib/dom.js';
 
 const groups = [
   ['The basics', [
-    ['What is Zenfort Markets?', `${SITE.name} is a cryptocurrency trading and investment platform that provides secure wallet management, investment plans, and professional trading services.`],
+    ['What is Serenhold Markets?', `${SITE.name} is a cryptocurrency trading and investment platform that provides secure wallet management, investment plans, and professional trading services.`],
     ['Why are balances in US dollars?', 'Keeping one currency makes every balance and fee easy to follow. Crypto is only how money arrives and leaves.'],
     ['What are the Main and Profit wallets?', 'Main is spendable: deposits arrive there and withdrawals and investments come from it. Profit collects investment returns; move them to Main any time.']]],
   ['Deposits', [

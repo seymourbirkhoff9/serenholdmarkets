@@ -41,10 +41,10 @@ const TITLES = { '/': 'Overview', '/deposits': 'Deposits', '/withdrawals': 'With
 
 (async () => {
   // Preload only if this browser was an admin last time; avoids a pointless 403 for customers.
-  let wasAdmin = false; try { wasAdmin = sessionStorage.getItem('zf-admin') === '1'; } catch { /* private mode */ }
+  let wasAdmin = false; try { wasAdmin = sessionStorage.getItem('sh-admin') === '1'; } catch { /* private mode */ }
   if (wasAdmin && (!location.hash || location.hash === '#/')) prefetch('admin:overview', api.admin.overview);
   const user = await api.auth.me();
-  try { sessionStorage.setItem('zf-admin', user.is_admin ? '1' : '0'); } catch { /* private mode */ }
+  try { sessionStorage.setItem('sh-admin', user.is_admin ? '1' : '0'); } catch { /* private mode */ }
   if (!user.is_admin) { location.href = '/app.html'; return; }
   session.user = user;
   const shell = mountShell({ area: 'admin', user, nav: NAV });
@@ -59,11 +59,11 @@ const TITLES = { '/': 'Overview', '/deposits': 'Deposits', '/withdrawals': 'With
   refreshBadges();
   setInterval(refreshBadges, 30_000);
   document.addEventListener('visibilitychange', refreshBadges);
-  window.addEventListener('zf:queues-changed', () => { invalidate('admin:'); refreshBadges(); });
+  window.addEventListener('sh:queues-changed', () => { invalidate('admin:'); refreshBadges(); });
 
   createRouter({
     '/': overview, '/deposits': depositsQueue, '/withdrawals': withdrawalsQueue, '/kyc': kyc,
     '/customers': customers, '/customers/:id': customer, '/ledger': ledger, '/audit': audit,
     '/plans': plans, '/investments': investments, '/methods': methods, '/fx': fx, '/broadcast': broadcast, '*': overview,
-  }, { onRoute: (pattern, path) => { shell.setActive(path); document.title = `${TITLES[pattern] || 'Overview'} — Zenfort operations`; } }).start();
+  }, { onRoute: (pattern, path) => { shell.setActive(path); document.title = `${TITLES[pattern] || 'Overview'} — Serenhold operations`; } }).start();
 })();

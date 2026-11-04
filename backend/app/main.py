@@ -1,5 +1,5 @@
 """
-app/main.py — FastAPI application entry point for Zenfort Markets.
+app/main.py — FastAPI application entry point for Serenhold Markets.
 
 Schema changes are managed by Alembic (`alembic upgrade head`); the app no
 longer calls create_all(), which silently skipped column changes and let the
@@ -23,7 +23,7 @@ from app.routers import admin, admin_emails, auth, files, fx, investments, leade
 from app.services.roi import run_roi_accrual
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-logger = logging.getLogger("zenfort.startup")
+logger = logging.getLogger("serenhold.startup")
 
 ROI_INTERVAL_SECONDS = 60 * 60
 
@@ -64,7 +64,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Zenfort Markets API",
+    title="Serenhold Markets API",
     description="Educational crypto-broker simulation: USD ledger, manual crypto rails, admin review.",
     version="2.0.0",
     lifespan=lifespan,
@@ -137,7 +137,7 @@ if settings.DEV_OUTBOX:
 @app.api_route("/health", methods=["GET", "HEAD"], tags=["Health"])
 @app.api_route("/api/health", methods=["GET", "HEAD"], tags=["Health"], include_in_schema=False)
 def health_check():
-    return {"status": "ok", "service": "zenfort-markets-api"}
+    return {"status": "ok", "service": "serenhold-markets-api"}
 
 
 # Serve the built frontend from the same origin (production). Mounted last, so /api/* wins.

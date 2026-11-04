@@ -17,7 +17,7 @@ from app.services.ledger import credit, lock_wallet, money
 from app.services.notification_service import send_notification_and_email
 
 
-logger = logging.getLogger("zenfort.referrals")
+logger = logging.getLogger("serenhold.referrals")
 
 
 def _tag(user: User) -> str:
@@ -60,7 +60,7 @@ def _pay_bonus(db: Session, user: User, milestone_type: str) -> None:
     msg = f"You earned {usd(bonus)} because {user.full_name} made their {event}."
     send_notification_and_email(
         db=db, user=referrer, title="Referral bonus earned", message=msg, notification_type="referral",
-        email_subject="Referral bonus earned — Zenfort Markets",
+        email_subject="Referral bonus earned — Serenhold Markets",
         email_html=render_email("Referral bonus earned", referrer.full_name,
                                 [msg, "It's already in your Main wallet."]),
     )

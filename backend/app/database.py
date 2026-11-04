@@ -19,7 +19,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import settings
 
-logger = logging.getLogger("zenfort.db")
+logger = logging.getLogger("serenhold.db")
 
 POOL_SIZE = 15
 
@@ -52,7 +52,7 @@ def start_request_stats() -> dict:
 
 @event.listens_for(engine, "before_cursor_execute")
 def _before(conn, cursor, statement, parameters, context, executemany):
-    context._zf_start = time.perf_counter()
+    context._sh_start = time.perf_counter()
     if settings.SIMULATE_DB_LATENCY_MS:
         time.sleep(settings.SIMULATE_DB_LATENCY_MS / 1000)
 
@@ -62,7 +62,7 @@ def _after(conn, cursor, statement, parameters, context, executemany):
     stats = _stats.get()
     if stats is not None:
         stats["queries"] += 1
-        stats["db_ms"] += (time.perf_counter() - context._zf_start) * 1000
+        stats["db_ms"] += (time.perf_counter() - context._sh_start) * 1000
 
 
 def _ping_all(n: int) -> int:

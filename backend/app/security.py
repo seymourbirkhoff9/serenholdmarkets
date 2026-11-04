@@ -3,10 +3,10 @@ app/security.py — password hashing, JWTs, and request authentication.
 
 Authentication sources (checked in order):
   1. `Authorization: Bearer <jwt>`  — used by Swagger, scripts and tests.
-  2. httpOnly cookie `zf_session`  — used by the browser frontend.
+  2. httpOnly cookie `sh_session`  — used by the browser frontend.
 
 CSRF: cookie-authenticated requests with an unsafe method (POST/PUT/PATCH/DELETE)
-must carry the `X-Requested-With: zenfort` header. Browsers will not attach a
+must carry the `X-Requested-With: serenhold` header. Browsers will not attach a
 custom header to a cross-site request without a CORS preflight, and our CORS
 policy only allows the configured frontend origin.
 """
@@ -23,13 +23,13 @@ from app.database import get_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SESSION_COOKIE = "zf_session"
-ADMIN_COOKIE = "zf_admin_session"        # the admin's own session, parked while they view as a customer
+SESSION_COOKIE = "sh_session"
+ADMIN_COOKIE = "sh_admin_session"        # the admin's own session, parked while they view as a customer
 IMPERSONATION_MINUTES = 30
 # While viewing as a customer, these are the only writes allowed.
 IMPERSONATION_WRITE_ALLOWLIST = {"/api/auth/impersonation/exit", "/api/auth/logout"}
 CSRF_HEADER = "x-requested-with"
-CSRF_VALUE = "zenfort"
+CSRF_VALUE = "serenhold"
 UNSAFE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 
 

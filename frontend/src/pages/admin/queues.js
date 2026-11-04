@@ -5,7 +5,7 @@ import { icon } from '../../lib/icons.js';
 import { copy, emptyState, errorState, openDialog, skeletonRows, toast, toastError } from '../../lib/ui.js';
 import { pageHeader } from '../common.js';
 
-const changed = () => window.dispatchEvent(new Event('zf:queues-changed'));
+const changed = () => window.dispatchEvent(new Event('sh:queues-changed'));
 
 const customerCell = (t) => (t.user_id
   ? html`<a class="font-medium hover:underline" href="#/customers/${t.user_id}">${t.user_name || 'Customer'}</a>

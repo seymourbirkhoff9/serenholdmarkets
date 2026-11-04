@@ -67,12 +67,12 @@ def _signed_in_user(request: Request, db: Session) -> Optional[User]:
 @router.post("/requests", status_code=201)
 def create_request(payload: SupportRequest, request: Request, db: Session = Depends(get_db)):
     if payload.website:                                   # bot filled the hidden field
-        return {"reference": "ZF-" + secrets.token_hex(3).upper(), "emailed": True}
+        return {"reference": "SH-" + secrets.token_hex(3).upper(), "emailed": True}
     ratelimit.limit(f"support:{ratelimit.client_ip(request)}", 5, 60 * 60,
                     "You’ve sent several requests already. We’ll reply by email; please wait before sending more.")
     ratelimit.limit(f"support:{payload.email.lower()}", 3, 60 * 60,
                     "You’ve sent several requests already. We’ll reply by email; please wait before sending more.")
-    ref = "ZF-" + secrets.token_hex(3).upper()
+    ref = "SH-" + secrets.token_hex(3).upper()
     user = _signed_in_user(request, db)
     who = f"{payload.name} <{payload.email}>" + (f" (signed in as {user.email})" if user else " (not signed in)")
     lines = [f"Reference: {ref}", f"From: {who}", f"Page: {payload.page or 'unknown'}", "", "Message:", payload.message]

@@ -63,7 +63,7 @@ function showCodeStep(challenge, recovery = false) {
   render('#step', html`
     <form id="code-form" class="grid gap-4" novalidate>
       <p class="text-muted">${recovery ? 'Enter one of the recovery codes you saved when you turned on two-factor sign-in. Each code works once.'
-        : 'Open your authenticator app and enter the 6-digit code for Zenfort Markets.'}</p>
+        : 'Open your authenticator app and enter the 6-digit code for Serenhold Markets.'}</p>
       <div class="field"><label class="label" for="code">${recovery ? 'Recovery code' : 'Authentication code'}</label>
         <input class="input figure text-center text-2xl tracking-[0.3em]" id="code" name="code" required autocomplete="one-time-code"
           ${recovery ? html`maxlength="9" placeholder="XXXX-XXXX" autocapitalize="characters"` : html`inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000"`} /></div>

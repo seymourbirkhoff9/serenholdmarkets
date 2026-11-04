@@ -17,12 +17,12 @@ const codesBlock = (codes) => html`
     <button type="button" class="btn-quiet btn-sm" data-download-codes>Download as a file</button></div>`;
 
 function wireCodes(dlg, codes) {
-  const text = `Zenfort Markets recovery codes (each works once)\n\n${codes.join('\n')}\n`;
+  const text = `Serenhold Markets recovery codes (each works once)\n\n${codes.join('\n')}\n`;
   dlg.querySelector('[data-copy-codes]').addEventListener('click', () => copy(text, 'Recovery codes copied'));
   dlg.querySelector('[data-download-codes]').addEventListener('click', () => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
-    a.download = 'zenfort-recovery-codes.txt';
+    a.download = 'serenhold-recovery-codes.txt';
     a.click();
     URL.revokeObjectURL(a.href);
   });
@@ -73,7 +73,7 @@ async function turnOn() {
       const submit = dlg.querySelector('button[type=submit]');
       if (step === 'password') {
         setup = await api.auth.twoFactorSetup(v.password);
-        const svg = await QRCode.toString(setup.otpauth_uri, { type: 'svg', margin: 1, width: 200, color: { dark: '#14243B', light: '#FFFFFF' } });
+        const svg = await QRCode.toString(setup.otpauth_uri, { type: 'svg', margin: 1, width: 200, color: { dark: '#0E4D4A', light: '#FFFFFF' } });
         render(body, html`
           <ol class="grid gap-4 text-sm">
             <li><strong>1.</strong> In your authenticator app, add an account and scan this code.

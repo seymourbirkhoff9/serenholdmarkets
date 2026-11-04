@@ -31,6 +31,6 @@ const NAV = [
   createRouter(
     { '/': overview, '/wallet': wallet, '/invest': invest, '/activity': activity,
       '/referrals': referrals, '/settings': settings, '*': overview },
-    { onRoute: (pattern, path) => { shell.setActive(path); document.title = `${titles[pattern] || 'Overview'} — Zenfort Markets`; } },
+    { onRoute: (pattern, path) => { shell.setActive(path); document.title = `${titles[pattern] || 'Overview'} — Serenhold Markets`; } },
   ).start();
 })();

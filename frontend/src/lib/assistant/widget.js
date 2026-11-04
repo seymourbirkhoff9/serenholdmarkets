@@ -7,6 +7,7 @@
 import { api } from '../api.js';
 import { html, render } from '../dom.js';
 import { money, waited } from '../format.js';
+import { logoMark } from '../brand.js';
 import { icon } from '../icons.js';
 import { STARTERS, TOPICS } from './kb.js';
 import { match } from './match.js';
@@ -15,43 +16,43 @@ const SUPPORT_EMAIL = 'support@serenholdmarkets.online';
 const byId = Object.fromEntries(TOPICS.map((t) => [t.id, t]));
 
 export function mountAssistant({ user = null } = {}) {
-  if (document.getElementById('zf-assistant')) return;
+  if (document.getElementById('sh-assistant')) return;
   const transcript = [];
   let misses = 0;
   let me = user;
 
   const root = document.createElement('div');
-  root.id = 'zf-assistant';
+  root.id = 'sh-assistant';
   render(root, html`
-    <button id="zfa-launch" class="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full bg-navy px-4 py-3 text-sm font-semibold text-navy-fg shadow-lg hover:opacity-90"
-      aria-expanded="false" aria-controls="zfa-panel">${icon('chat')}<span>Help</span></button>
-    <section id="zfa-panel" role="dialog" aria-label="Support assistant" hidden
-      class="fixed inset-0 z-[55] flex flex-col bg-surface shadow-2xl sm:inset-auto sm:bottom-20 sm:right-4 sm:h-[min(36rem,calc(100dvh-7rem))] sm:w-[24rem] sm:rounded-lg sm:border sm:border-line">
+    <button id="sha-launch" class="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-fg shadow-lg hover:opacity-90"
+      aria-expanded="false" aria-controls="sha-panel">${icon('chat')}<span>Help</span></button>
+    <section id="sha-panel" role="dialog" aria-label="Support assistant" hidden
+      class="fixed inset-0 z-[55] flex flex-col bg-surface shadow-2xl sm:inset-auto sm:bottom-20 sm:right-4 sm:h-[min(36rem,calc(100dvh-7rem))] sm:w-[24rem] sm:rounded-2xl sm:border sm:border-line">
       <header class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
         <div class="flex items-center gap-2.5">
-          <span class="grid h-8 w-8 place-items-center rounded bg-navy font-serif text-navy-fg">Z</span>
-          <div><p class="text-sm font-semibold">Zenfort help</p><p class="text-xs text-muted">Instant answers. A person for anything else.</p></div>
+          ${logoMark()}
+          <div><p class="text-sm font-semibold">Serenhold help</p><p class="text-xs text-muted">Instant answers. A person for anything else.</p></div>
         </div>
-        <button type="button" id="zfa-close" class="rounded p-1.5 text-muted hover:bg-sunken hover:text-ink" aria-label="Close help">
+        <button type="button" id="sha-close" class="rounded p-1.5 text-muted hover:bg-sunken hover:text-ink" aria-label="Close help">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </header>
-      <div id="zfa-log" class="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4" role="log" aria-live="polite"></div>
-      <form id="zfa-form" class="flex gap-2 border-t border-line p-3">
-        <label for="zfa-input" class="sr-only">Type your question</label>
-        <input id="zfa-input" class="input py-2" autocomplete="off" maxlength="500" placeholder="Type your question…" />
+      <div id="sha-log" class="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4" role="log" aria-live="polite"></div>
+      <form id="sha-form" class="flex gap-2 border-t border-line p-3">
+        <label for="sha-input" class="sr-only">Type your question</label>
+        <input id="sha-input" class="input py-2" autocomplete="off" maxlength="500" placeholder="Type your question…" />
         <button class="btn-primary px-3" aria-label="Send">${icon('send', 'h-4 w-4')}</button>
       </form>
     </section>`);
   document.body.append(root);
 
-  const panel = root.querySelector('#zfa-panel'), launch = root.querySelector('#zfa-launch');
-  const log = root.querySelector('#zfa-log'), form = root.querySelector('#zfa-form'), input = root.querySelector('#zfa-input');
+  const panel = root.querySelector('#sha-panel'), launch = root.querySelector('#sha-launch');
+  const log = root.querySelector('#sha-log'), form = root.querySelector('#sha-form'), input = root.querySelector('#sha-input');
   let greeted = false;
 
   const scroll = () => { log.scrollTop = log.scrollHeight; };
   const bubble = (who, content) => {
     const el = document.createElement('div');
-    el.className = who === 'you' ? 'ml-8 rounded-lg rounded-br-sm bg-navy px-3 py-2 text-sm text-navy-fg' : 'mr-6 grid gap-2 text-sm';
+    el.className = who === 'you' ? 'ml-8 rounded-lg rounded-br-sm bg-primary px-3 py-2 text-sm text-primary-fg' : 'mr-6 grid gap-2 text-sm';
     render(el, who === 'you' ? html`${content}` : html`<div class="rounded-lg rounded-bl-sm bg-sunken px-3 py-2">${content}</div>`);
     log.append(el); scroll();
     return el;
@@ -60,8 +61,8 @@ export function mountAssistant({ user = null } = {}) {
     const el = document.createElement('div');
     el.className = 'flex flex-wrap gap-1.5';
     render(el, html`${items.map(([label, val, kind]) => kind === 'link'
-      ? html`<a class="rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium hover:border-brass" href="${val}">${label}</a>`
-      : html`<button type="button" class="rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium hover:border-brass" data-ask="${val}">${label}</button>`)}`);
+      ? html`<a class="rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium hover:border-accent" href="${val}">${label}</a>`
+      : html`<button type="button" class="rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium hover:border-accent" data-ask="${val}">${label}</button>`)}`);
     log.append(el); scroll();
   };
   const say = (text, extra = []) => { transcript.push({ who: 'assistant', text }); bubble('bot', text); if (extra.length) chips(extra); };
@@ -161,7 +162,7 @@ export function mountAssistant({ user = null } = {}) {
   };
   const close = () => { panel.hidden = true; launch.setAttribute('aria-expanded', 'false'); launch.classList.remove('max-sm:hidden'); launch.focus(); };
   launch.addEventListener('click', () => (panel.hidden ? open() : close()));
-  root.querySelector('#zfa-close').addEventListener('click', close);
+  root.querySelector('#sha-close').addEventListener('click', close);
   panel.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   form.addEventListener('submit', (e) => { e.preventDefault(); const q = input.value; input.value = ''; ask(q); });
   log.addEventListener('click', (e) => {

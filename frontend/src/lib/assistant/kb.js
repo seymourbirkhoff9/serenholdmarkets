@@ -13,8 +13,8 @@ export const TOPICS = [
   { id: 'thanks', keys: ['thanks', 'thank you', 'thx', 'great', 'perfect', 'ok thanks'],
     answer: 'You’re welcome. Anything else I can help with?' },
   { id: 'legit', keys: ['real', 'legit', 'scam', 'real money', 'is this safe', 'trust', 'fake'],
-    answer: 'Zenfort Markets is a professional cryptocurrency trading and investment platform. All transactions are processed securely with full audit trails.',
-    links: [['About Zenfort', '/about.html'], ['Risk Disclosure', '/risk.html']] },
+    answer: 'Serenhold Markets is a professional cryptocurrency trading and investment platform. All transactions are processed securely with full audit trails.',
+    links: [['About Serenhold', '/about.html'], ['Risk Disclosure', '/risk.html']] },
 
   // Deposits
   { id: 'deposit_how', keys: ['deposit', 'fund', 'top up', 'add money', 'add funds', 'send crypto', 'pay in', 'how to deposit', 'deposit address', 'wallet address'],

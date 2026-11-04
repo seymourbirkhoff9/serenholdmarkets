@@ -16,7 +16,7 @@ from app.services import mailer
 from app.services.email_templates import render_email
 from app.database import SessionLocal
 
-logger = logging.getLogger("zenfort.admin_emails")
+logger = logging.getLogger("serenhold.admin_emails")
 
 router = APIRouter(prefix="/api/admin/emails", tags=["Admin Emails"])
 

@@ -74,8 +74,8 @@ const card = (i) => {
     <div>
       <div class="relative h-2.5 overflow-hidden rounded-full bg-sunken" role="progressbar" aria-label="Days paid"
            aria-valuemin="0" aria-valuemax="${i.duration_days}" aria-valuenow="${i.days_paid}">
-        <div class="zf-bar absolute inset-y-0 left-0 rounded-full bg-brass" style="width:0" data-w="${d.paidPct.toFixed(2)}"></div>
-        ${i.status === 'active' ? html`<div class="zf-bar zf-accruing absolute inset-y-0 rounded-full bg-brass/40" data-accrue
+        <div class="sh-bar absolute inset-y-0 left-0 rounded-full bg-accent" style="width:0" data-w="${d.paidPct.toFixed(2)}"></div>
+        ${i.status === 'active' ? html`<div class="sh-bar sh-accruing absolute inset-y-0 rounded-full bg-accent/40" data-accrue
           style="left:${d.paidPct.toFixed(2)}%;width:0" data-w="${d.accruingPct.toFixed(3)}"></div>` : ''}
       </div>
       <p class="mt-1.5 flex justify-between text-xs text-muted">

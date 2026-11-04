@@ -6,7 +6,7 @@ import logging
 import resend
 from app.config import settings
 
-logger = logging.getLogger("zenfort.email")
+logger = logging.getLogger("serenhold.email")
 
 # Set API key once at import time
 resend.api_key = settings.RESEND_API_KEY
@@ -22,7 +22,7 @@ def send_welcome_email(to_email: str, full_name: str) -> None:
     """Send a welcome email to newly registered users."""
     if not _api_key_present():
         logger.info(
-            "[Mock Email] send_welcome_email → to=%s  subject='Welcome to Zenfort Markets'",
+            "[Mock Email] send_welcome_email → to=%s  subject='Welcome to Serenhold Markets'",
             to_email,
         )
         return
@@ -31,16 +31,16 @@ def send_welcome_email(to_email: str, full_name: str) -> None:
         resend.Emails.send({
             "from": settings.EMAIL_FROM,
             "to": [to_email],
-            "subject": "Welcome to Zenfort Markets",
+            "subject": "Welcome to Serenhold Markets",
             "html": f"""
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
-              <h2 style="color:#1a1a3e;">Welcome to Zenfort Markets, {full_name}!</h2>
+              <h2 style="color:#0E4D4A;">Welcome to Serenhold Markets, {full_name}!</h2>
               <p>Your account has been created successfully. You can now log in and explore
                  our multi-currency crypto investment platform.</p>
               <p>If you have any questions, reach out to <a href="mailto:support@serenholdmarkets.online">
                  support@serenholdmarkets.online</a>.</p>
               <hr/>
-              <small style="color:#888;">Zenfort Markets — Trade Smarter. Grow Stronger.</small>
+              <small style="color:#888;">Serenhold Markets — Calm, accountable crypto investing.</small>
             </div>
             """,
         })
@@ -71,16 +71,16 @@ def send_p2p_transfer_notification(
         resend.Emails.send({
             "from": settings.EMAIL_FROM,
             "to": [recipient_email],
-            "subject": f"You received {amount} {currency} on Zenfort Markets",
+            "subject": f"You received {amount} {currency} on Serenhold Markets",
             "html": f"""
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
-              <h2 style="color:#1a1a3e;">Funds Received</h2>
+              <h2 style="color:#0E4D4A;">Funds Received</h2>
               <p>Hi {recipient_name},</p>
               <p><strong>{sender_name}</strong> has sent you
-                 <strong>{amount} {currency}</strong> via Zenfort Markets.</p>
+                 <strong>{amount} {currency}</strong> via Serenhold Markets.</p>
               <p>The funds have been credited to your Main wallet.</p>
               <hr/>
-              <small style="color:#888;">Zenfort Markets</small>
+              <small style="color:#888;">Serenhold Markets</small>
             </div>
             """,
         })

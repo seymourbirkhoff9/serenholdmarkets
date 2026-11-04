@@ -26,7 +26,7 @@ def test_signup_creates_usd_wallets_and_cookie_session(client, make_user):
     assert all(w["currency"] == "USD" for w in wallets)          # not NGN any more
 
     r = client.post("/api/auth/login", json={"email": u["email"], "password": "User-pass-1"})
-    assert "zf_session" in r.cookies
+    assert "sh_session" in r.cookies
     me = client.get("/api/auth/me")                              # cookie only
     assert me.status_code == 200 and "kyc_document_url" not in me.json()
 
@@ -36,7 +36,7 @@ def test_cookie_writes_require_csrf_header(client, make_user):
     client.post("/api/auth/login", json={"email": u["email"], "password": "User-pass-1"})
     body = {"from_wallet": "main", "to_wallet": "profit", "amount": "1"}
     assert client.post("/api/wallets/transfer", json=body).status_code == 403
-    r = client.post("/api/wallets/transfer", json=body, headers={"X-Requested-With": "zenfort"})
+    r = client.post("/api/wallets/transfer", json=body, headers={"X-Requested-With": "serenhold"})
     assert r.status_code == 422          # passed CSRF, failed on balance — as intended
 
 
@@ -285,7 +285,7 @@ import uuid as _uuid
 from app.models import Transaction as _Tx, User as _User
 from app.security import hash_password as _hash
 
-CSRF = {"X-Requested-With": "zenfort"}
+CSRF = {"X-Requested-With": "serenhold"}
 
 
 def _cookie_admin(client):
@@ -478,13 +478,13 @@ def test_public_endpoints_are_safe_and_fresh(client, admin, method):
 
 def test_branded_email_escapes_and_has_text_version():
     html = _render("Withdrawal sent", "<b>Eve</b>", ["We sent $98.50 worth of USDT."],
-                   cta=("Open your account", "https://zenfortmarkets.com/app.html#/wallet"),
+                   cta=("Open your account", "https://serenholdmarkets.online/app.html#/wallet"),
                    rows=[("Amount sent", "$98.50"), ("To address", "TQn9<script>")])
     assert "<b>Eve</b>" not in html and "&lt;b&gt;Eve&lt;/b&gt;" in html and "<script>" not in html
     assert "Amount sent" in html and "Open your account" in html and "/terms.html" in html
     text = _h2t(html)
     assert "Hi <b>Eve</b>," in text and "Amount sent" in text and "$98.50" in text
-    assert "Open your account (https://zenfortmarkets.com/app.html#/wallet)" in text and "<" not in text.replace("<b>", "").replace("</b>", "").replace("<script>", "")
+    assert "Open your account (https://serenholdmarkets.online/app.html#/wallet)" in text and "<" not in text.replace("<b>", "").replace("</b>", "").replace("<script>", "")
 
 
 # ── Batch 5: errors, CORS, rate limits, password reset, 2FA, email delivery, support ──
@@ -504,10 +504,10 @@ def _login(client, email, password):
 def test_friendly_errors_and_cors(client):
     r = client.get("/api/does-not-exist")
     assert r.status_code == 404 and "couldn’t find" in r.json()["detail"] and r.json()["detail"] != "Not Found"
-    for origin, ok in [("http://localhost:3000", True), ("https://zenfortmarkets.vercel.app", True),
-                       ("https://zenfortmarkets-git-dev-me.vercel.app", True), ("https://zenfortmarkets.online", True),
-                       ("https://www.zenfortmarkets.online", True), ("https://evil.example", False),
-                       ("https://zenfortmarkets.vercel.app.evil.com", False)]:
+    for origin, ok in [("http://localhost:3000", True), ("https://serenholdmarkets.vercel.app", True),
+                       ("https://serenholdmarkets-git-dev-me.vercel.app", True), ("https://serenholdmarkets.online", True),
+                       ("https://www.serenholdmarkets.online", True), ("https://evil.example", False),
+                       ("https://serenholdmarkets.vercel.app.evil.com", False)]:
         pre = client.options("/api/auth/login", headers={"Origin": origin, "Access-Control-Request-Method": "POST",
                                                          "Access-Control-Request-Headers": "content-type,x-requested-with"})
         assert (pre.headers.get("access-control-allow-origin") == origin) is ok, origin
@@ -552,9 +552,9 @@ def test_change_password_signs_out_other_sessions(client, make_user):
     other_device = u["h"]
     r = client.post("/api/auth/change-password", headers=other_device,
                     json={"current_password": "User-pass-1", "new_password": "Changed-pass-9"})
-    assert r.status_code == 204 and "zf_session" in r.cookies                       # this device gets a fresh session
+    assert r.status_code == 204 and "sh_session" in r.cookies                       # this device gets a fresh session
     assert client.get("/api/auth/me", headers=other_device).status_code == 401
-    assert client.get("/api/auth/me", headers={"Authorization": "Bearer " + r.cookies["zf_session"]}).status_code == 200
+    assert client.get("/api/auth/me", headers={"Authorization": "Bearer " + r.cookies["sh_session"]}).status_code == 200
 
 
 def test_two_factor_full_lifecycle(client, admin, make_user):
@@ -563,13 +563,13 @@ def test_two_factor_full_lifecycle(client, admin, make_user):
     assert client.post("/api/auth/2fa/setup", headers=u["h"], json={"password": "nope"}).status_code == 400
     setup = client.post("/api/auth/2fa/setup", headers=u["h"], json={"password": "User-pass-1"}).json()
     totp = _pyotp.TOTP(setup["secret"])
-    assert setup["otpauth_uri"].startswith("otpauth://totp/Zenfort%20Markets:")
+    assert setup["otpauth_uri"].startswith("otpauth://totp/Serenhold%20Markets:")
     assert client.post("/api/auth/2fa/enable", headers=u["h"], json={"code": "000000"}).status_code == 400
     en = client.post("/api/auth/2fa/enable", headers=u["h"], json={"code": totp.now()})
     codes = en.json()["recovery_codes"]
     assert en.status_code == 200 and len(codes) == 8 and _re.fullmatch(r"[A-Z2-9]{4}-[A-Z2-9]{4}", codes[0])
     assert client.get("/api/auth/me", headers=u["h"]).status_code == 401              # older sessions ended
-    me = client.get("/api/auth/me", headers={"Authorization": "Bearer " + en.cookies["zf_session"]}).json()
+    me = client.get("/api/auth/me", headers={"Authorization": "Bearer " + en.cookies["sh_session"]}).json()
     assert me["totp_enabled"] is True
 
     step1 = _login(client, u["email"], "User-pass-1").json()
@@ -639,11 +639,11 @@ def test_mailer_speaks_resend_api(monkeypatch):
 
     import json
     monkeypatch.setattr(_settings, "RESEND_API_KEY", "re_live_123")
-    monkeypatch.setattr(_settings, "EMAIL_REPLY_TO", "support@zenfortmarkets.online")
+    monkeypatch.setattr(_settings, "EMAIL_REPLY_TO", "support@serenholdmarkets.online")
     monkeypatch.setattr(_mailer, "_client", httpx.Client(transport=httpx.MockTransport(handler)))
     r = _mailer.send("a@x.dev", "Subject", "<p>Hello <b>you</b></p>")
     assert r.ok and seen["url"] == "https://api.resend.com/emails" and seen["auth"] == "Bearer re_live_123"
-    assert seen["body"]["reply_to"] == "support@zenfortmarkets.online" and seen["body"]["text"] and seen["body"]["html"]
+    assert seen["body"]["reply_to"] == "support@serenholdmarkets.online" and seen["body"]["text"] and seen["body"]["html"]
     bad = _mailer.send("blocked@x.dev", "Subject", "<p>x</p>")
     assert not bad.ok and "Verify the domain in Resend" in bad.reason and "403" not in bad.reason
 
@@ -657,12 +657,12 @@ def test_batch_survives_bad_addresses(monkeypatch):
     def handler(req):
         body = json.loads(req.content)
         if req.url.path == "/emails/batch":
-            if any(m["to"] == ["bad@zenforttest.com"] for m in body):
+            if any(m["to"] == ["bad@serenhold.test"] for m in body):
                 return httpx.Response(422, json={"statusCode": 422, "name": "validation_error",
                                                  "message": "Invalid `to` field. Please use our testing email address instead."})
             sent.extend(m["to"][0] for m in body)
             return httpx.Response(200, json={"data": []})
-        if body["to"] == ["bad@zenforttest.com"]:
+        if body["to"] == ["bad@serenhold.test"]:
             return httpx.Response(422, json={"message": "Invalid `to` field. Please use our testing email address instead."})
         sent.append(body["to"][0])
         return httpx.Response(200, json={"id": "x"})
@@ -671,7 +671,7 @@ def test_batch_survives_bad_addresses(monkeypatch):
     monkeypatch.setattr(_settings, "DEV_OUTBOX", False)
     monkeypatch.setattr(_mailer, "_client", httpx.Client(transport=httpx.MockTransport(handler)))
     monkeypatch.setattr(_mailer.time, "sleep", lambda s: None)
-    to = ["a@gmail.com", "user@example.com", "bad@zenforttest.com", "b@yahoo.com", "x@shop.test"]
+    to = ["a@gmail.com", "user@example.com", "bad@serenhold.test", "b@yahoo.com", "x@shop.test"]
     res = _mailer.send_batch([{"to": t, "subject": "S", "html": "<p>x</p>"} for t in to])
     assert [r.ok for r in res] == [True, False, False, True, False]
     assert sorted(sent) == ["a@gmail.com", "b@yahoo.com"]                       # example.com / .test never sent
@@ -685,7 +685,7 @@ def test_support_requests(client, make_user, monkeypatch):
             "transcript": [{"who": "you", "text": "where is my deposit"}, {"who": "assistant", "text": "Deposits are reviewed…"}],
             "page": "/app.html#/wallet"}
     r = client.post("/api/support/requests", json=body)
-    assert r.status_code == 201 and r.json()["reference"].startswith("ZF-")
+    assert r.status_code == 201 and r.json()["reference"].startswith("SH-")
     mail = _mailer.OUTBOX[-1]
     assert mail["to"] == _settings.SUPPORT_EMAIL and "where is my deposit" in mail["text"] and "pending for two days" in mail["text"]
     assert client.post("/api/support/requests", json={**body, "message": "hi"}).status_code == 422

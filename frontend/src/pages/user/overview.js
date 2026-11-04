@@ -64,7 +64,7 @@ export default async function overview(outlet) {
             <p class="text-sm text-muted">Main wallet</p>
             <p class="figure mt-1 text-3xl md:text-5xl break-words">${money(mainInCurrency, currency)}</p>
             ${currency !== 'USD' ? html`<p class="mt-1 text-xs text-muted">≈ ${money(bal.main)} USD</p>` : ''}
-            <span class="mt-3 block h-0.5 w-14 bg-brass" aria-hidden="true"></span>
+            <span class="mt-3 block h-0.5 w-14 bg-accent" aria-hidden="true"></span>
             <p class="mt-3 text-sm text-muted">Spendable. Deposits arrive here; withdrawals and investments come from here.</p>
           </div>
           <div class="bg-surface p-6">

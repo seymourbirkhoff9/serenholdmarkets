@@ -15,7 +15,7 @@ from typing import Optional
 
 import pycountry
 
-logger = logging.getLogger("zenfort.country")
+logger = logging.getLogger("serenhold.country")
 
 # ──────────────────────────────────────────────────────────────────
 # Alpha-2 → Primary ISO 4217 fiat currency

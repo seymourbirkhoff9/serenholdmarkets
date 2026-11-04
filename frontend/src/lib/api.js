@@ -43,7 +43,7 @@ export const setUnauthorizedHandler = (fn) => { onUnauthorized = fn; };
 
 // In-flight request count, for the top progress bar (see shell.js).
 let busy = 0;
-const setBusy = (d) => { busy += d; window.dispatchEvent(new CustomEvent('zf:busy', { detail: busy })); };
+const setBusy = (d) => { busy += d; window.dispatchEvent(new CustomEvent('sh:busy', { detail: busy })); };
 
 export async function request(path, opts = {}) {
   setBusy(1);
@@ -53,9 +53,9 @@ export async function request(path, opts = {}) {
 // ── Friendly, consistent error messages ──────────────────────────────
 const MESSAGES = {
   offline: 'You’re offline. Check your internet connection and try again.',
-  network: 'We couldn’t reach Zenfort Markets. Check your connection and try again.',
+  network: 'We couldn’t reach Serenhold Markets. Check your connection and try again.',
   timeout: 'This is taking longer than usual. Check your connection and try again.',
-  waking: 'Zenfort Markets is starting up or busy. Please try again in a few seconds.',
+  waking: 'Serenhold Markets is starting up or busy. Please try again in a few seconds.',
   server: 'Something went wrong on our side. Please try again in a moment.',
   missing: 'This service isn’t available right now. Please try again shortly.',
   limit: 'Too many attempts. Please wait a minute and try again.',
@@ -93,7 +93,7 @@ async function send(path, { method = 'GET', body, query, raw = false, quiet401 =
         credentials: 'include',
         signal: ctrl.signal,
         headers: {
-          'X-Requested-With': 'zenfort',
+          'X-Requested-With': 'serenhold',
           ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
         },
         body: body !== undefined ? JSON.stringify(body) : undefined,

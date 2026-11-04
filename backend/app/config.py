@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     # Resend Email
     RESEND_API_KEY: str
-    EMAIL_FROM: str = "noreply@zenfortmarkets.com"
+    EMAIL_FROM: str = "noreply@serenholdmarkets.online"
 
     # CORS / frontend
     FRONTEND_ORIGIN: str = "http://localhost:3000"
@@ -58,16 +58,16 @@ class Settings(BaseSettings):
     # Browsers normally reach the API through the same address as the site (Vercel rewrite or Vite proxy),
     # so CORS only matters for direct calls. Comma-separated exact origins, plus a pattern for Vercel previews.
     ALLOWED_ORIGINS: str = ("http://localhost:3000,http://127.0.0.1:3000,"
-                            "https://zenfortmarkets.vercel.app,"
-                            "https://zenfortmarkets.online,https://www.zenfortmarkets.online")
-    CORS_ORIGIN_REGEX: str = r"https://zenfortmarkets(-[a-z0-9-]+)?\.vercel\.app"
+                            "https://serenholdmarkets.vercel.app,"
+                            "https://serenholdmarkets.online,https://www.serenholdmarkets.online")
+    CORS_ORIGIN_REGEX: str = r"https://serenholdmarkets(-[a-z0-9-]+)?\.vercel\.app"
 
     # ── Email ──
     # EMAIL_FROM: a no-reply address on a domain verified in Resend (until then, onboarding@resend.dev,
     # which Resend only delivers to your own Resend account address).
     # EMAIL_REPLY_TO / SUPPORT_EMAIL: where customer replies and support requests go.
     EMAIL_REPLY_TO: str = ""
-    SUPPORT_EMAIL: str = "support@zenfortmarkets.online"
+    SUPPORT_EMAIL: str = "support@serenholdmarkets.online"
     # Development only: keep sent emails in memory and expose them at /api/dev/outbox (never in production).
     DEV_OUTBOX: bool = False
 

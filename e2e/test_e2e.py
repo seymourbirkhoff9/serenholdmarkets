@@ -1,5 +1,5 @@
 """Browser test of the full operator/customer flow. Needs: pip install playwright && playwright install chromium.
-Run against a FRESH database with one admin ops@zenfort.dev / Ops-pass-123, API on :8000 and `npm run preview` on :3000.
+Run against a FRESH database with one admin ops@serenhold.dev / Ops-pass-123, API on :8000 and `npm run preview` on :3000.
 Put proof.png and id.png (any small PNGs) next to this file.Set E2E_BASE=http://localhost:8000 to test the single-service (Render-style) setup.
 Run the API with DEV_OUTBOX=true so the password-reset and support steps can read sent emails.
 """
@@ -26,7 +26,7 @@ with sync_playwright() as p:
 
     # ── Operator sets up rails and a plan ─────────────────────────
     A.goto(f"{BASE}/login.html")
-    A.fill("#email", "ops@zenfort.dev"); A.fill("#password", "Ops-pass-123"); A.click("button[type=submit]")
+    A.fill("#email", "ops@serenhold.dev"); A.fill("#password", "Ops-pass-123"); A.click("button[type=submit]")
     A.wait_for_url("**/admin.html**")
     # Existing accounts haven't accepted any terms version yet, so the console asks once.
     tdlg = A.locator("dialog[open]"); expect(tdlg).to_contain_text("We’ve updated our terms")
@@ -56,7 +56,7 @@ with sync_playwright() as p:
     # ── Customer signs up (name contains an XSS payload) ──────────
     evil = 'Tunde <img src=x onerror=alert(1)>'
     C.goto(f"{BASE}/signup.html?ref=OPSADMIN")
-    C.fill("#full_name", evil); C.fill("#email", "tunde@zenfort.dev"); C.select_option("#country", "Nigeria")
+    C.fill("#full_name", evil); C.fill("#email", "tunde@serenhold.dev"); C.select_option("#country", "Nigeria")
     C.fill("#password", "Cust-pass-123"); C.fill("#confirm_password", "Cust-pass-123")
     expect(C.locator("#referral_code")).to_have_value("OPSADMIN")
     C.click("button[type=submit]")
@@ -65,7 +65,7 @@ with sync_playwright() as p:
     C.click("button[type=submit]"); expect(C.get_by_role("heading", name="Check your inbox")).to_be_visible()
     step("customer signs up via referral link")
     C.get_by_role("link", name="Sign in").click()
-    C.fill("#email", "tunde@zenfort.dev"); C.fill("#password", "Cust-pass-123")
+    C.fill("#email", "tunde@serenhold.dev"); C.fill("#password", "Cust-pass-123")
     C.get_by_role("button", name=re.compile("Show password", re.I)).click()
     assert C.locator("#password").get_attribute("type") == "text"
     C.get_by_role("button", name=re.compile("password", re.I)).click()
@@ -105,7 +105,7 @@ with sync_playwright() as p:
     A.keyboard.press("Escape")
     A.get_by_role("button", name="Confirm").click()
     A.locator("dialog[open]").get_by_role("button", name="Credit $500.00").click()
-    expect(A.get_by_text("Credited $500.00 to tunde@zenfort.dev.")).to_be_visible()
+    expect(A.get_by_text("Credited $500.00 to tunde@serenhold.dev.")).to_be_visible()
     expect(A.get_by_text("Queue is clear")).to_be_visible()
     step("admin views the proof and confirms; queue clears")
 
@@ -207,7 +207,7 @@ with sync_playwright() as p:
     expect(inv.locator("[data-count]")).to_have_text("$4.80", timeout=4000)          # count-up lands on 3 × $1.60
     expect(inv).to_contain_text("Next return of $1.60 in")
     A.wait_for_timeout(1600)
-    w = inv.locator(".zf-bar").first.evaluate("e => e.getBoundingClientRect().width / e.parentElement.getBoundingClientRect().width")
+    w = inv.locator(".sh-bar").first.evaluate("e => e.getBoundingClientRect().width / e.parentElement.getBoundingClientRect().width")
     assert 0.09 < w < 0.11, f"progress bar should be ~10% after animating, got {w:.3f}"
     A.screenshot(path="shots/admin-investments.png", full_page=True)
     step(f"[B2] investments page: bar animated to {w*100:.0f}% (3/30 days), earnings counted up to $4.80, live countdown")
@@ -233,7 +233,7 @@ with sync_playwright() as p:
     A.keyboard.press("Escape")
     # even a forged request is refused by the server
     forged = A.evaluate("""() => fetch('/api/wallets/transfer', {method:'POST', credentials:'include',
-        headers:{'Content-Type':'application/json','X-Requested-With':'zenfort'},
+        headers:{'Content-Type':'application/json','X-Requested-With':'serenhold'},
         body: JSON.stringify({from_wallet:'main', to_wallet:'profit', amount:'1'})}).then(r => r.status)""")
     assert forged == 403, forged
     step("[B2] admin views Tunde's account read-only: banner + countdown, dialogs and settings locked, forged write → 403")
@@ -252,7 +252,7 @@ with sync_playwright() as p:
     A.get_by_role("menuitem", name="Make admin").click()
     A.locator("dialog[open]").get_by_role("button", name="Make admin").click()
     expect(A.get_by_text("is now an admin.")).to_be_visible()
-    expect(A.locator("tr", has_text="tunde@zenfort.dev").get_by_text("Admin", exact=True)).to_be_visible()
+    expect(A.locator("tr", has_text="tunde@serenhold.dev").get_by_text("Admin", exact=True)).to_be_visible()
     A.get_by_role("link", name=re.compile("Tunde")).click()
     A.get_by_role("button", name="Remove admin access").click()
     A.locator("dialog[open]").get_by_role("button", name="Remove admin access").click()
@@ -273,11 +273,11 @@ with sync_playwright() as p:
     assert C.request.get(BASE + src if src.startswith("/") else src).ok
     expect(C.get_by_role("button", name="Remove")).to_be_visible()
     A.goto(f"{BASE}/admin.html#/customers")
-    expect(A.locator("tr", has_text="tunde@zenfort.dev").locator("img")).to_have_count(1)
+    expect(A.locator("tr", has_text="tunde@serenhold.dev").locator("img")).to_have_count(1)
     step("[B3] customer adds a profile photo: header updates at once, admin list shows it")
 
     with psycopg2.connect("postgresql://zf:zf@localhost/zf_e2e") as pg, pg.cursor() as cur:
-        cur.execute("UPDATE users SET terms_version = '2020-01' WHERE email = 'tunde@zenfort.dev'")
+        cur.execute("UPDATE users SET terms_version = '2020-01' WHERE email = 'tunde@serenhold.dev'")
     C.goto(f"{BASE}/app.html#/"); C.reload()
     dlg = C.locator("dialog[open]")
     expect(dlg).to_contain_text("We’ve updated our terms")
@@ -286,7 +286,7 @@ with sync_playwright() as p:
     dlg.locator("[name=agree]").check(); dlg.get_by_role("button", name="Accept and continue").click()
     expect(C.locator("dialog[open]")).to_have_count(0)
     with psycopg2.connect("postgresql://zf:zf@localhost/zf_e2e") as pg, pg.cursor() as cur:
-        cur.execute("SELECT terms_version FROM users WHERE email = 'tunde@zenfort.dev'"); assert cur.fetchone()[0] == "2026-10"
+        cur.execute("SELECT terms_version FROM users WHERE email = 'tunde@serenhold.dev'"); assert cur.fetchone()[0] == "2026-10"
     step("[B3] updated terms: blocking prompt, needs the tick, acceptance recorded")
 
     for path, heading in [("/terms.html", "Terms of Service"), ("/privacy.html", "Privacy Policy"), ("/risk.html", "Risk Disclosure")]:
@@ -318,7 +318,7 @@ with sync_playwright() as p:
     E = b.new_context().new_page()
     E.route("**/api/auth/login", lambda r: r.abort("internetdisconnected"))
     E.goto(f"{BASE}/login.html"); E.fill("#email", "x@y.dev"); E.fill("#password", "whatever1"); E.click("button[type=submit]")
-    expect(E.get_by_text("We couldn’t reach Zenfort Markets. Check your connection and try again.")).to_be_visible()
+    expect(E.get_by_text("We couldn’t reach Serenhold Markets. Check your connection and try again.")).to_be_visible()
     E.unroute("**/api/auth/login")
     E.route("**/api/auth/login", lambda r: r.fulfill(status=404, content_type="text/html", body="<h1>404: NOT_FOUND</h1>"))
     E.click("button[type=submit]")
@@ -329,17 +329,17 @@ with sync_playwright() as p:
 
     # Password reset by email (fresh account)
     R = b.new_context(viewport={"width": 1280, "height": 900}).new_page(); watch(R, "reset")
-    R.request.post(f"{BASE}/api/auth/signup", data={"full_name": "Rita Reset", "email": "rita@zenfort.dev", "password": "Rita-pass-123",
+    R.request.post(f"{BASE}/api/auth/signup", data={"full_name": "Rita Reset", "email": "rita@serenhold.dev", "password": "Rita-pass-123",
                    "confirm_password": "Rita-pass-123", "country": "Kenya", "accept_terms": True})
     R.goto(f"{BASE}/login.html"); R.get_by_role("link", name="Forgot password?").click()
-    R.fill("#email", "rita@zenfort.dev"); R.click("button[type=submit]")
+    R.fill("#email", "rita@serenhold.dev"); R.click("button[type=submit]")
     expect(R.get_by_text("If an account uses that email")).to_be_visible()
-    mail = next(m for m in outbox() if m["to"] == "rita@zenfort.dev" and "Reset your password" in m["subject"])
+    mail = next(m for m in outbox() if m["to"] == "rita@serenhold.dev" and "Reset your password" in m["subject"])
     link = re.search(r'href="([^"]*reset-password\.html\?token=[^"]+)"', mail["html"]).group(1)
     R.goto(BASE + link[link.index("/reset-password.html"):])
     R.fill("#pw", "Rita-newpass-456"); R.fill("#pw2", "Rita-newpass-456"); R.click("button[type=submit]")
     R.wait_for_url("**/login.html?reset=1"); expect(R.get_by_text("Password updated.")).to_be_visible()
-    R.fill("#email", "rita@zenfort.dev"); R.fill("#password", "Rita-newpass-456"); R.click("button[type=submit]")
+    R.fill("#email", "rita@serenhold.dev"); R.fill("#password", "Rita-newpass-456"); R.click("button[type=submit]")
     R.wait_for_url("**/app.html**")
     tdlg = R.locator("dialog[open]")
     if tdlg.count(): tdlg.locator("[name=agree]").check(); tdlg.get_by_role("button", name="Accept and continue").click()
@@ -356,7 +356,7 @@ with sync_playwright() as p:
     d.get_by_role("button", name="I’ve saved my codes").click()
     expect(R.get_by_text("Status: On")).to_be_visible()
     R.click("#account-btn"); R.click("#logout-btn"); R.wait_for_url("**/login.html")
-    R.fill("#email", "rita@zenfort.dev"); R.fill("#password", "Rita-newpass-456"); R.click("button[type=submit]")
+    R.fill("#email", "rita@serenhold.dev"); R.fill("#password", "Rita-newpass-456"); R.click("button[type=submit]")
     expect(R.get_by_role("heading", name="Two-factor sign-in")).to_be_visible()
     R.fill("#code", "123456"); expect(R.get_by_text("That code isn’t right")).to_be_visible()
     R.fill("#code", totp.at(time.time() + 30))                                       # next window: fresh, unused code
@@ -366,22 +366,22 @@ with sync_playwright() as p:
     # Help assistant: anonymous visitor, then signed-in customer with live status and a hand-off
     P = b.new_context().new_page(); watch(P, "public")
     P.goto(f"{BASE}/"); P.get_by_role("button", name="Help").click()
-    P.locator("#zfa-input").fill("where is my deposit"); P.locator("#zfa-input").press("Enter")
-    expect(P.locator("#zfa-log")).to_contain_text("Sign in and ask again")
-    P.locator("#zfa-input").fill("purple elephant sandwich"); P.locator("#zfa-input").press("Enter")
-    expect(P.locator("#zfa-log")).to_contain_text("not sure I understood")
+    P.locator("#sha-input").fill("where is my deposit"); P.locator("#sha-input").press("Enter")
+    expect(P.locator("#sha-log")).to_contain_text("Sign in and ask again")
+    P.locator("#sha-input").fill("purple elephant sandwich"); P.locator("#sha-input").press("Enter")
+    expect(P.locator("#sha-log")).to_contain_text("not sure I understood")
     P.close()
     C.goto(f"{BASE}/app.html#/"); C.get_by_role("button", name="Help").click()
-    C.locator("#zfa-log").get_by_role("button", name="Where is my deposit?").click()
-    expect(C.locator("#zfa-log")).to_contain_text("no deposits waiting for review")
-    C.locator("#zfa-input").fill("I sent to the wrong network"); C.locator("#zfa-input").press("Enter")
-    C.locator("#zfa-log").get_by_role("button", name="Contact support").last.click()
-    form = C.locator("#zfa-log form")
-    expect(form.locator("[name=email]")).to_have_value("tunde@zenfort.dev")              # pre-filled for signed-in users
+    C.locator("#sha-log").get_by_role("button", name="Where is my deposit?").click()
+    expect(C.locator("#sha-log")).to_contain_text("no deposits waiting for review")
+    C.locator("#sha-input").fill("I sent to the wrong network"); C.locator("#sha-input").press("Enter")
+    C.locator("#sha-log").get_by_role("button", name="Contact support").last.click()
+    form = C.locator("#sha-log form")
+    expect(form.locator("[name=email]")).to_have_value("tunde@serenhold.dev")              # pre-filled for signed-in users
     form.get_by_role("button", name="Send to support").click()
-    expect(C.locator("#zfa-log")).to_contain_text("Your reference is ZF-")
+    expect(C.locator("#sha-log")).to_contain_text("Your reference is SH-")
     sup = next(m for m in outbox() if "Support request" in m["subject"])
-    assert sup["to"] == "support@zenfortmarkets.online" and "wrong network" in sup["text"]
+    assert sup["to"] == "support@serenholdmarkets.online" and "wrong network" in sup["text"]
     C.get_by_role("button", name="Close help").click()
     step("[B5] help assistant: answers, live status, admits when unsure, hands off to support (email reaches support)")
 
@@ -397,7 +397,7 @@ with sync_playwright() as p:
     step("[B5] translate menu works; amounts protected; falls back to English if Google is unreachable")
 
     M = b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True).new_page(); watch(M, "mobile")
-    M.goto(f"{BASE}/login.html"); M.fill("#email", "tunde@zenfort.dev"); M.fill("#password", "Cust-pass-123"); M.click("button[type=submit]")
+    M.goto(f"{BASE}/login.html"); M.fill("#email", "tunde@serenhold.dev"); M.fill("#password", "Cust-pass-123"); M.click("button[type=submit]")
     M.wait_for_url("**/app.html**"); M.wait_for_selector("p.figure.text-5xl")
     M.screenshot(path="shots/mobile-overview.png", full_page=True)
     M.click("#bell-btn"); M.locator("#bell-panel li").first.wait_for()
@@ -444,7 +444,7 @@ with sync_playwright() as p:
     expect(A.locator("#plan-table")).to_contain_text("Starter 30"); expect(A.locator("#plan-table")).to_contain_text("24%")
     assert "deposit_address" not in A.content() and "TXyz9k2LmN4pQ8rS6tU1vW3xY5zA7bC9dE" not in A.content()
     for path, h1 in [("/how-it-works.html", "How it works"), ("/security.html", "Security"), ("/faq.html", "Frequently asked questions"),
-                     ("/about.html", "About Zenfort Markets"), ("/contact.html", "Contact")]:
+                     ("/about.html", "About Serenhold Markets"), ("/contact.html", "Contact")]:
         A.goto(BASE + path); expect(A.get_by_role("heading", name=h1, level=1)).to_be_visible()
         expect(A.get_by_role("navigation", name="Legal")).to_be_visible()
     A.goto(f"{BASE}/faq.html"); A.get_by_text("Why do I need to verify my identity?").click()

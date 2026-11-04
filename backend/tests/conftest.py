@@ -1,7 +1,7 @@
 """
 Integration tests run against a real, disposable PostgreSQL database.
 
-    TEST_DATABASE_URL=postgresql://user:pass@localhost/zenfort_test pytest -q
+    TEST_DATABASE_URL=postgresql://user:pass@localhost/serenhold_test pytest -q
 
 Never point this at Supabase/production: the schema is dropped and recreated.
 """
@@ -14,10 +14,11 @@ TEST_DB = os.environ.get("TEST_DATABASE_URL")
 if not TEST_DB:
     pytest.skip("Set TEST_DATABASE_URL to a disposable Postgres database.", allow_module_level=True)
 import tempfile
-os.environ.setdefault("LOCAL_UPLOAD_DIR", tempfile.mkdtemp(prefix="zf-uploads-"))
+os.environ.setdefault("LOCAL_UPLOAD_DIR", tempfile.mkdtemp(prefix="sh-uploads-"))
 os.environ.update(SUPABASE_URL="", SUPABASE_SERVICE_ROLE_KEY="")       # tests use local file storage
 os.environ.update(DATABASE_URL=TEST_DB, SECRET_KEY=os.environ.get("SECRET_KEY", "x" * 40),
-                  RESEND_API_KEY="re_XXXX", ENABLE_SCHEDULER="false", DB_KEEP_WARM="false")
+                  RESEND_API_KEY="re_XXXX", ENABLE_SCHEDULER="false", DB_KEEP_WARM="false",
+                  COOKIE_SECURE="false")   # the test client talks plain HTTP
 
 from fastapi.testclient import TestClient  # noqa: E402
 

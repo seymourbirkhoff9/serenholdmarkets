@@ -61,7 +61,7 @@ def _notify(db: Session, user: User, title: str, message: str, kind: str,
     link = f"{settings.FRONTEND_URL.rstrip('/')}/app.html{_CTA.get(kind, '#/')}"
     send_notification_and_email(
         db=db, user=user, title=title, message=message, notification_type=kind,
-        email_subject=f"{title} — Zenfort Markets",
+        email_subject=f"{title} — Serenhold Markets",
         email_html=render_email(title, user.full_name, [message, *(extra or [])], rows=rows,
                                 cta=("Open your account", link)),
     )

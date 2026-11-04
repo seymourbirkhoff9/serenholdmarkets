@@ -12,7 +12,7 @@ from typing import List, Optional, Sequence, Tuple
 
 from app.config import settings
 
-NAVY, BRASS, INK, MUTED, LINE, PAPER = "#14243B", "#A8781F", "#1C2633", "#5F6B7A", "#DCE2E9", "#F5F7F9"
+TEAL, MINT, INK, MUTED, LINE, PAPER = "#0E4D4A", "#7FE3BF", "#102A2A", "#566866", "#DFDBD1", "#F7F5F0"
 SANS = "-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
 SERIF = "Georgia,'Times New Roman',serif"
 
@@ -54,8 +54,8 @@ def render_email(heading: str, name: str, paragraphs: Sequence[str],
         label, url = cta
         button = (
             f'<table role="presentation" cellpadding="0" cellspacing="0" style="margin:8px 0 22px;"><tr>'
-            f'<td style="background:{NAVY};border-radius:6px;">'
-            f'<a href="{escape(url, quote=True)}" style="display:inline-block;padding:12px 22px;font:600 15px {SANS};'
+            f'<td style="background:{TEAL};border-radius:999px;">'
+            f'<a href="{escape(url, quote=True)}" style="display:inline-block;padding:13px 26px;font:600 15px {SANS};'
             f'color:#ffffff;text-decoration:none;">{escape(label)}</a></td></tr></table>')
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -64,21 +64,21 @@ def render_email(heading: str, name: str, paragraphs: Sequence[str],
 <span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden;">{pre}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{PAPER};"><tr><td align="center" style="padding:28px 12px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
-    <tr><td style="background:{NAVY};border-radius:10px 10px 0 0;padding:18px 28px;">
+    <tr><td style="background:{TEAL};border-radius:16px 16px 0 0;padding:20px 28px;">
       <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-        <td style="width:30px;height:30px;background:{BRASS};border-radius:6px;text-align:center;font:600 18px/30px {SERIF};color:{NAVY};">Z</td>
-        <td style="padding-left:10px;font:600 16px {SANS};color:#ffffff;">Zenfort Markets</td>
+        <td style="width:30px;height:30px;background:{MINT};border-radius:9px;text-align:center;font:600 18px/30px {SERIF};color:{TEAL};">S</td>
+        <td style="padding-left:10px;font:600 18px {SERIF};color:#ffffff;">Serenhold <span style="font:700 10px {SANS};letter-spacing:2px;color:{MINT};">MARKETS</span></td>
       </tr></table></td></tr>
-    <tr><td style="height:3px;background:{BRASS};font-size:0;line-height:0;">&nbsp;</td></tr>
-    <tr><td style="background:#ffffff;border:1px solid {LINE};border-top:0;border-radius:0 0 10px 10px;padding:30px 28px 24px;">
+    <tr><td style="height:3px;background:{MINT};font-size:0;line-height:0;">&nbsp;</td></tr>
+    <tr><td style="background:#ffffff;border:1px solid {LINE};border-top:0;border-radius:0 0 16px 16px;padding:30px 28px 24px;">
       <h1 style="margin:0 0 18px;font:400 26px/1.25 {SERIF};color:{INK};">{escape(heading)}</h1>
       <p style="margin:0 0 14px;font:15px/1.6 {SANS};color:{INK};">Hi {escape(name)},</p>
       {body}{table}{button}
       <p style="margin:18px 0 0;font:13px/1.6 {SANS};color:{MUTED};">Questions? Reply to this email or visit
-        <a href="{escape(_site('/'), quote=True)}" style="color:{NAVY};">your account</a>.</p>
+        <a href="{escape(_site('/'), quote=True)}" style="color:{TEAL};">your account</a>.</p>
     </td></tr>
     <tr><td style="padding:18px 8px 0;font:12px/1.6 {SANS};color:{MUTED};text-align:center;">
-      You’re receiving this because you have an account at Zenfort Markets.<br>
+      You’re receiving this because you have an account at Serenhold Markets.<br>
       <a href="{escape(_site('/terms.html'), quote=True)}" style="color:{MUTED};">Terms</a> &nbsp;|&nbsp;
       <a href="{escape(_site('/privacy.html'), quote=True)}" style="color:{MUTED};">Privacy</a> &nbsp;|&nbsp;
       <a href="{escape(_site('/risk.html'), quote=True)}" style="color:{MUTED};">Risk Disclosure</a>

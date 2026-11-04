@@ -49,7 +49,7 @@ def _generate_unique_referral_code(db: Session) -> str:
 def _send_verification(user: User) -> None:
     token = create_purpose_token(user.email, VERIFY_PURPOSE, VERIFY_MINUTES)
     link = f"{settings.FRONTEND_URL.rstrip('/')}/verify-email.html?token={token}"
-    queue_email(user.email, "Confirm your email — Zenfort Markets",
+    queue_email(user.email, "Confirm your email — Serenhold Markets",
                 render_email("Confirm your email", user.full_name,
                              ["Confirm this address so we can reach you about deposits and withdrawals.",
                               "The link expires in 24 hours."],
@@ -83,7 +83,7 @@ def signup(payload: SignUpRequest, db: Session = Depends(get_db)):
             display_currency = get_currency_for_country(country_str)
         except Exception as e:
             import logging
-            logging.getLogger("zenfort.auth").warning(f"Failed to derive display_currency from country {payload.country}: {e}")
+            logging.getLogger("serenhold.auth").warning(f"Failed to derive display_currency from country {payload.country}: {e}")
             display_currency = "USD"
 
     user = User(
@@ -163,7 +163,7 @@ def login_two_factor(payload: TwoFactorLogin, response: Response, db: Session = 
             raise HTTPException(status_code=400, detail="That code isn’t right. Check your authenticator app and try again.")
         user.recovery_codes = remaining_codes
         left = twofactor.remaining(remaining_codes)
-        queue_email(user.email, "A recovery code was used — Zenfort Markets",
+        queue_email(user.email, "A recovery code was used — Serenhold Markets",
                     render_email("A recovery code was used", user.full_name,
                                  [f"You signed in with a recovery code. You have {left} left.",
                                   "If this wasn’t you, reset your password now and contact support."]))
@@ -296,13 +296,13 @@ def change_password(payload: PasswordChange, response: Response, current_user: U
     current_user.session_version = (current_user.session_version or 0) + 1
     db.commit()
     _start_session(response, current_user)
-    _security_email(current_user, "Your password was changed", "Your Zenfort Markets password was just changed.")
+    _security_email(current_user, "Your password was changed", "Your Serenhold Markets password was just changed.")
     response.status_code = 204
     return response
 
 
 def _security_email(user: User, heading: str, line: str) -> None:
-    queue_email(user.email, f"{heading} — Zenfort Markets",
+    queue_email(user.email, f"{heading} — Serenhold Markets",
                 render_email(heading, user.full_name, [line, "If this wasn’t you, reset your password now and contact support."],
                              cta=("Reset password", f"{settings.FRONTEND_URL.rstrip('/')}/forgot-password.html")))
 
@@ -345,7 +345,7 @@ def forgot_password(payload: ForgotPassword, request: Request, db: Session = Dep
                             "exp": datetime.now(timezone.utc) + timedelta(minutes=RESET_MINUTES)},
                            settings.SECRET_KEY, algorithm=settings.ALGORITHM)
         link = f"{settings.FRONTEND_URL.rstrip('/')}/reset-password.html?token={token}"
-        queue_email(user.email, "Reset your password — Zenfort Markets",
+        queue_email(user.email, "Reset your password — Serenhold Markets",
                     render_email("Reset your password", user.full_name,
                                  ["We received a request to reset your password. The link works once and expires in 30 minutes.",
                                   "If you didn’t ask for this, you can ignore this email; your password stays the same."],
@@ -368,7 +368,7 @@ def reset_password(payload: ResetPassword, db: Session = Depends(get_db)):
     user.hashed_password = hash_password(payload.new_password)
     user.session_version = (user.session_version or 0) + 1     # sign out everywhere
     db.commit()
-    _security_email(user, "Your password was reset", "Your Zenfort Markets password was just reset using an emailed link.")
+    _security_email(user, "Your password was reset", "Your Serenhold Markets password was just reset using an emailed link.")
     return {"status": "ok", "message": "Password updated. Sign in with your new password."}
 
 

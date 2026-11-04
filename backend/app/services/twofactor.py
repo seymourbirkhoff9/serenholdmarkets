@@ -18,7 +18,7 @@ from cryptography.fernet import Fernet, InvalidToken
 
 from app.config import settings
 
-ISSUER = "Zenfort Markets"
+ISSUER = "Serenhold Markets"
 _ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"      # no 0/O/1/I confusion
 
 

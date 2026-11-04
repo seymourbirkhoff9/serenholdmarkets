@@ -1,5 +1,5 @@
 """
-app/models.py — SQLAlchemy ORM models for Zenfort Markets
+app/models.py — SQLAlchemy ORM models for Serenhold Markets
 """
 import uuid
 from datetime import datetime

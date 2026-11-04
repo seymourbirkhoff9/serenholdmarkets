@@ -5,90 +5,88 @@ import { api } from '../../lib/api.js';
 import { themeButton, wireThemeButton } from '../../lib/theme.js';
 import { initTranslation, languageButton, wireLanguageButtons } from '../../lib/translate.js';
 import { mountAssistant } from '../../lib/assistant/widget.js';
+import { brandLink, wordmark } from '../../lib/brand.js';
 
 const NAV = [
   ['How it works', '/how-it-works.html'], ['Fees & limits', '/fees.html'], ['Security', '/security.html'],
   ['FAQ', '/faq.html'], ['About', '/about.html'],
 ];
 
+const COINS = [
+  { symbol: 'BTC', name: 'Bitcoin', price: '$67,245.00', change: '+2.34%', up: true },
+  { symbol: 'ETH', name: 'Ethereum', price: '$3,456.78', change: '+1.89%', up: true },
+  { symbol: 'BNB', name: 'BNB', price: '$598.45', change: '-0.45%', up: false },
+  { symbol: 'SOL', name: 'Solana', price: '$178.23', change: '+5.67%', up: true },
+  { symbol: 'XRP', name: 'XRP', price: '$0.5234', change: '-1.23%', up: false },
+  { symbol: 'ADA', name: 'Cardano', price: '$0.4567', change: '+0.89%', up: true },
+  { symbol: 'DOGE', name: 'Dogecoin', price: '$0.1234', change: '+3.45%', up: true },
+  { symbol: 'DOT', name: 'Polkadot', price: '$7.89', change: '-0.67%', up: false },
+];
+
 export const footer = () => html`
-  <footer class="border-t border-line bg-surface">
-    <div class="mx-auto grid max-w-6xl gap-10 px-6 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+  <footer class="bg-chrome text-chrome-fg">
+    <div class="mx-auto grid max-w-6xl gap-12 px-6 pb-12 pt-16 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
       <div>
-        <a href="/" class="flex items-center gap-2.5 font-semibold">
-          <span class="grid h-8 w-8 place-items-center rounded bg-navy font-serif text-lg text-navy-fg">Z</span>${SITE.name}</a>
-        <p class="mt-3 max-w-xs text-sm text-muted">Your trusted platform for cryptocurrency trading and investment management.</p>
+        ${brandLink({ tone: 'chrome' })}
+        <p class="mt-5 max-w-xs font-serif text-xl leading-snug text-chrome-fg/90">Calm, accountable crypto investing.</p>
+        <p class="mt-3 max-w-xs text-sm text-chrome-fg/60">Questions? <a class="underline decoration-accent underline-offset-4 hover:text-chrome-fg" href="mailto:${SITE.contactEmail}">${SITE.contactEmail}</a></p>
       </div>
       ${[
         ['Product', [['How it works', '/how-it-works.html'], ['Fees & limits', '/fees.html'], ['Supported networks', '/fees.html#networks'], ['Security', '/security.html']]],
         ['Company', [['About', '/about.html'], ['FAQ', '/faq.html'], ['Contact', '/contact.html']]],
         ['Legal', [['Terms of Service', '/terms.html'], ['Privacy Policy', '/privacy.html'], ['Risk Disclosure', '/risk.html']]],
-      ].map(([h, links]) => html`<nav aria-label="${h}"><p class="text-sm font-semibold">${h}</p>
-        <ul class="mt-3 grid gap-2 text-sm text-muted">${links.map(([l, u]) => html`<li><a class="hover:text-ink hover:underline" href="${u}">${l}</a></li>`)}</ul></nav>`)}
+      ].map(([h, links]) => html`<nav aria-label="${h}"><p class="text-xs font-bold uppercase tracking-[0.18em] text-chrome-fg/50">${h}</p>
+        <ul class="mt-4 grid gap-2.5 text-sm text-chrome-fg/80">${links.map(([l, u]) => html`<li><a class="hover:text-chrome-fg hover:underline hover:decoration-accent hover:underline-offset-4" href="${u}">${l}</a></li>`)}</ul></nav>`)}
     </div>
-    <p class="border-t border-line px-6 py-5 text-center text-xs text-muted">© ${new Date().getFullYear()} ${SITE.name}. All rights reserved.</p>
+    <div class="border-t border-white/10">
+      <p class="mx-auto flex max-w-6xl flex-wrap justify-between gap-2 px-6 py-5 text-xs text-chrome-fg/50">
+        <span>© ${new Date().getFullYear()} ${SITE.name}. All rights reserved.</span><span>Crypto assets are volatile. Read the risk disclosure before investing.</span></p>
+    </div>
   </footer>`;
 
+const burger = () => html`<span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>`;
+
 export const header = () => html`
-  <header class="relative z-30 mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-5">
-    <a href="/" class="flex shrink-0 items-center gap-2.5 font-semibold">
-      <span class="grid h-8 w-8 place-items-center rounded bg-navy font-serif text-lg text-navy-fg">Z</span>${SITE.name}</a>
-    <nav aria-label="Main" class="hidden items-center gap-6 text-sm lg:flex">
-      ${NAV.map(([l, u]) => html`<a class="text-muted hover:text-ink ${location.pathname === u ? 'font-semibold text-ink' : ''}" href="${u}"
-        ${location.pathname === u ? html`aria-current="page"` : ''}>${l}</a>`)}
-    </nav>
-    <div class="flex items-center gap-1 sm:gap-2" id="auth-links">
-      ${languageButton()}
-      ${themeButton()}
-      <span id="auth-cta" class="hidden items-center gap-2 sm:flex"><a class="btn-quiet" href="/login.html">Sign in</a>
-      <a class="btn-primary" href="/signup.html">Create account</a></span>
-      <button id="pub-menu" class="rounded p-2 text-muted hover:bg-sunken lg:hidden" aria-expanded="false" aria-controls="pub-nav" aria-label="Menu">
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <header id="site-header" class="sticky top-0 z-40 border-b border-transparent bg-paper/80 backdrop-blur-md transition-colors">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+      ${brandLink()}
+      <nav aria-label="Main" class="hidden items-center gap-1 rounded-full border border-line bg-surface/70 p-1 text-sm lg:flex">
+        ${NAV.map(([l, u]) => html`<a class="rounded-full px-4 py-1.5 font-medium transition-colors ${location.pathname === u ? 'bg-primary text-primary-fg' : 'text-muted hover:text-ink'}" href="${u}"
+          ${location.pathname === u ? html`aria-current="page"` : ''}>${l}</a>`)}
+      </nav>
+      <div class="flex items-center gap-1 sm:gap-2" id="auth-links">
+        ${languageButton()}
+        ${themeButton()}
+        <span id="auth-cta" class="hidden items-center gap-2 sm:flex"><a class="btn-quiet" href="/login.html">Sign in</a>
+        <a class="btn-primary" href="/signup.html">Open account</a></span>
+        <button id="pub-menu" class="grid h-10 w-10 place-items-center rounded-full border border-line bg-surface text-ink lg:hidden" aria-expanded="false" aria-controls="pub-nav" aria-label="Open menu">${burger()}</button>
+      </div>
     </div>
-    <nav id="pub-nav" aria-label="Main" class="panel absolute inset-x-4 top-[4.5rem] grid gap-1 p-2 shadow-xl lg:hidden" hidden>
-      ${NAV.map(([l, u]) => html`<a class="nav-link" href="${u}">${l}</a>`)}
-      <div id="auth-cta-mobile" class="mt-1 grid gap-2 border-t border-line p-2 pt-3 sm:hidden">
-        <a class="btn-primary" href="/signup.html">Create account</a><a class="btn-quiet" href="/login.html">Sign in</a></div>
+  </header>
+  <div id="pub-nav" class="menu-sheet fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-chrome text-chrome-fg lg:hidden" role="dialog" aria-modal="true" aria-label="Menu" inert>
+    <div class="flex items-center justify-between px-6 py-4">
+      ${wordmark({ tone: 'chrome' })}
+      <button id="pub-menu-close" class="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-chrome-fg" aria-expanded="true" aria-label="Close menu">${burger()}</button>
+    </div>
+    <nav aria-label="Main" class="mt-6 grid px-6">
+      ${NAV.map(([l, u], i) => html`<a class="menu-item group flex items-baseline gap-4 border-b border-white/10 py-4" style="--i:${i}" href="${u}">
+        <span class="text-xs font-bold tabular-nums text-accent">0${i + 1}</span>
+        <span class="font-serif text-3xl transition-transform group-hover:translate-x-1 ${location.pathname === u ? 'text-accent' : ''}">${l}</span></a>`)}
     </nav>
-  </header>`;
+    <div id="auth-cta-mobile" class="menu-item mt-auto grid gap-3 px-6 pb-10 pt-8" style="--i:${NAV.length}">
+      <a class="btn bg-[#7FE3BF] px-5 py-3 text-base text-[#06302C] hover:bg-[#9BEBCF]" href="/signup.html">Open account</a>
+      <a class="btn border border-white/20 px-5 py-3 text-base text-chrome-fg" href="/login.html">Sign in</a></div>
+  </div>`;
 
 export const cryptoTicker = () => html`
-  <div class="border-b border-line bg-sunken overflow-hidden">
-    <div class="flex animate-marquee whitespace-nowrap py-2">
-      ${[
-        { symbol: 'BTC', name: 'Bitcoin', price: '$67,245.00', change: '+2.34%', up: true },
-        { symbol: 'ETH', name: 'Ethereum', price: '$3,456.78', change: '+1.89%', up: true },
-        { symbol: 'BNB', name: 'BNB', price: '$598.45', change: '-0.45%', up: false },
-        { symbol: 'SOL', name: 'Solana', price: '$178.23', change: '+5.67%', up: true },
-        { symbol: 'XRP', name: 'XRP', price: '$0.5234', change: '-1.23%', up: false },
-        { symbol: 'ADA', name: 'Cardano', price: '$0.4567', change: '+0.89%', up: true },
-        { symbol: 'DOGE', name: 'Dogecoin', price: '$0.1234', change: '+3.45%', up: true },
-        { symbol: 'DOT', name: 'Polkadot', price: '$7.89', change: '-0.67%', up: false },
-      ].map(coin => html`
-        <div class="flex items-center gap-3 px-6 text-sm">
-          <span class="font-semibold text-ink">${coin.symbol}</span>
-          <span class="text-muted">${coin.name}</span>
-          <span class="font-medium text-ink">${coin.price}</span>
-          <span class="${coin.up ? 'text-success' : 'text-danger'}">${coin.change}</span>
-        </div>
-      `)}
-      ${[
-        { symbol: 'BTC', name: 'Bitcoin', price: '$67,245.00', change: '+2.34%', up: true },
-        { symbol: 'ETH', name: 'Ethereum', price: '$3,456.78', change: '+1.89%', up: true },
-        { symbol: 'BNB', name: 'BNB', price: '$598.45', change: '-0.45%', up: false },
-        { symbol: 'SOL', name: 'Solana', price: '$178.23', change: '+5.67%', up: true },
-        { symbol: 'XRP', name: 'XRP', price: '$0.5234', change: '-1.23%', up: false },
-        { symbol: 'ADA', name: 'Cardano', price: '$0.4567', change: '+0.89%', up: true },
-        { symbol: 'DOGE', name: 'Dogecoin', price: '$0.1234', change: '+3.45%', up: true },
-        { symbol: 'DOT', name: 'Polkadot', price: '$7.89', change: '-0.67%', up: false },
-      ].map(coin => html`
-        <div class="flex items-center gap-3 px-6 text-sm">
-          <span class="font-semibold text-ink">${coin.symbol}</span>
-          <span class="text-muted">${coin.name}</span>
-          <span class="font-medium text-ink">${coin.price}</span>
-          <span class="${coin.up ? 'text-success' : 'text-danger'}">${coin.change}</span>
-        </div>
-      `)}
+  <div class="overflow-hidden bg-chrome text-chrome-fg" aria-label="Market prices (indicative)">
+    <div class="flex animate-marquee whitespace-nowrap py-1.5">
+      ${[...COINS, ...COINS].map((coin) => html`
+        <div class="flex items-center gap-2 px-5 text-xs">
+          <span class="font-bold tracking-wide">${coin.symbol}</span>
+          <span class="tabular-nums text-chrome-fg/70">${coin.price}</span>
+          <span class="rounded-full px-1.5 py-px font-semibold tabular-nums ${coin.up ? 'bg-accent/15 text-[#7FE3BF]' : 'bg-rejected/20 text-[#FFB4A6]'}">${coin.up ? '▲' : '▼'} ${coin.change.replace(/^[+-]/, '')}</span>
+        </div>`)}
     </div>
   </div>`;
 
@@ -98,14 +96,17 @@ export function enhance() {
   wireLanguageButtons();
   initTranslation();
   mountAssistant();
-  // Signed-in visitors get a direct way back in instead of "Sign in / Create account".
+  // Signed-in visitors get a direct way back in instead of "Sign in / Open account".
   api.auth.me({ quiet401: true }).then((u) => {
-    const link = html`<a class="btn-primary" href="${u.is_admin ? '/admin.html' : '/app.html'}">${u.is_admin ? 'Open the console' : 'Go to your account'}</a>`;
-    render('#auth-cta', link);
-    render('#auth-cta-mobile', link);
+    const href = u.is_admin ? '/admin.html' : '/app.html', label = u.is_admin ? 'Open the console' : 'Go to your account';
+    render('#auth-cta', html`<a class="btn-primary" href="${href}">${label}</a>`);
+    render('#auth-cta-mobile', html`<a class="btn bg-[#7FE3BF] px-5 py-3 text-base text-[#06302C] hover:bg-[#9BEBCF]" href="${href}">${label}</a>`);
   }).catch(() => {});
-  const btn = document.getElementById('pub-menu'), nav = document.getElementById('pub-nav');
-  btn?.addEventListener('click', () => { nav.hidden = !nav.hidden; btn.setAttribute('aria-expanded', String(!nav.hidden)); });
+  wireMenu();
+  // The header gains a hairline once the page scrolls under it.
+  const head = document.getElementById('site-header');
+  const onScroll = () => head?.classList.toggle('border-line', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
   // Elements marked data-reveal fade up as they scroll into view (instantly with reduced motion).
   const els = document.querySelectorAll('[data-reveal]');
   if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -117,12 +118,31 @@ export function enhance() {
   els.forEach((el) => io.observe(el));
 }
 
+/** Full-screen mobile menu: opens from the burger, closes on ✕, Escape, a link, or a wide screen. */
+function wireMenu() {
+  const openBtn = document.getElementById('pub-menu'), closeBtn = document.getElementById('pub-menu-close');
+  const sheet = document.getElementById('pub-nav');
+  if (!openBtn || !sheet) return;
+  const set = (open) => {
+    sheet.classList.toggle('open', open);
+    sheet.inert = !open;
+    openBtn.setAttribute('aria-expanded', String(open));
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    (open ? closeBtn : openBtn).focus({ preventScroll: true });
+  };
+  openBtn.addEventListener('click', () => set(true));
+  closeBtn.addEventListener('click', () => set(false));
+  sheet.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && sheet.classList.contains('open')) set(false); });
+  matchMedia('(min-width: 1024px)').addEventListener('change', (m) => { if (m.matches && sheet.classList.contains('open')) set(false); });
+}
+
 /** A simple content page: header, title, body sections, footer. */
 export function contentPage({ title, intro, body }) {
   document.title = `${title} — ${SITE.name}`;
   render('#root', html`${cryptoTicker()}${header()}
     <main>
-      <section class="ledger-bg border-b border-line">
+      <section class="hero-bg border-b border-line">
         <div class="mx-auto max-w-6xl px-6 pb-14 pt-10">
           <h1 class="max-w-3xl font-serif text-4xl leading-tight sm:text-5xl">${title}</h1>
           <p class="mt-4 max-w-2xl text-lg text-muted">${intro}</p>

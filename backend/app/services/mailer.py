@@ -19,7 +19,7 @@ import httpx
 from app.config import settings
 from app.services.email_templates import html_to_text
 
-logger = logging.getLogger("zenfort.mail")
+logger = logging.getLogger("serenhold.mail")
 API = "https://api.resend.com"
 _client = httpx.Client(timeout=20)
 OUTBOX: deque = deque(maxlen=50)          # dev only

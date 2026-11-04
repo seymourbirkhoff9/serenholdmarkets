@@ -12,7 +12,7 @@ from app.models import User, Notification
 from app.config import settings
 from app.services import mailer
 
-logger = logging.getLogger("zenfort.notification")
+logger = logging.getLogger("serenhold.notification")
 
 # Email delivery runs off the request thread so a slow or failing provider never
 # delays (or breaks) the API response.

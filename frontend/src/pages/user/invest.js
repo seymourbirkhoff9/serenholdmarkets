@@ -24,7 +24,7 @@ const planCard = (p) => {
     ${p.description ? html`<p class="mt-1 text-sm text-muted">${p.description}</p>` : ''}
     <p class="mt-5 flex items-baseline gap-2"><span class="figure text-5xl">${pct(p.daily_roi_percent)}</span>
       <span class="text-sm text-muted">per day</span></p>
-    <span class="mt-3 block h-0.5 w-12 bg-brass" aria-hidden="true"></span>
+    <span class="mt-3 block h-0.5 w-12 bg-accent" aria-hidden="true"></span>
     <dl class="mt-4 grid grid-cols-3 gap-3 text-sm">
       <div><dt class="text-xs text-muted">Term</dt><dd class="figure text-base">${p.duration_days} days</dd></div>
       <div><dt class="text-xs text-muted">From</dt><dd class="figure text-base">${money(p.min_amount)}</dd></div>
@@ -76,7 +76,7 @@ export default async function invest(outlet) {
             <td class="whitespace-nowrap text-muted">${date(i.start_date)}<span class="block text-xs">Ends ${date(i.maturity_date)}</span></td>
             <td class="min-w-[9rem]">
               <div class="h-1.5 w-full overflow-hidden rounded-full bg-sunken" role="progressbar" aria-valuemin="0" aria-valuemax="${i.duration_days}" aria-valuenow="${i.days_paid}" aria-label="Days paid">
-                <div class="h-full bg-brass" style="width:${Math.min(100, (i.days_paid / i.duration_days) * 100)}%"></div></div>
+                <div class="h-full bg-accent" style="width:${Math.min(100, (i.days_paid / i.duration_days) * 100)}%"></div></div>
               <span class="mt-1 block text-xs text-muted">${i.days_paid} of ${i.duration_days} days paid</span></td>
             <td>${pill(i.status)}</td>
             <td class="text-right figure">${money(i.amount_invested)}</td>

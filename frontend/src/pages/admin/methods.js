@@ -129,16 +129,16 @@ function openTypePicker() {
         <p class="mb-4 text-sm text-muted">What kind of payment method are you adding?</p>
         <div class="grid gap-3 sm:grid-cols-2">
           <button type="button" data-pick="crypto"
-            class="flex flex-col items-start gap-2 rounded-lg border border-line bg-surface p-4 text-left hover:border-brass hover:bg-sunken transition-colors">
-            <span class="rounded-full bg-navy/10 p-2">
+            class="flex flex-col items-start gap-2 rounded-lg border border-line bg-surface p-4 text-left hover:border-accent hover:bg-sunken transition-colors">
+            <span class="rounded-full bg-primary/10 p-2">
               <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M9 9.5C9 8.1 10.1 7 11.5 7h1C13.9 7 15 8.1 15 9.5S13.9 12 12.5 12h-1C10.1 12 9 13.1 9 14.5S10.1 17 11.5 17h1c1.4 0 2.5-1.1 2.5-2.5M12 6v2M12 16v2"/></svg>
             </span>
             <span class="font-semibold">Crypto</span>
             <span class="text-xs text-muted">Bitcoin, USDT, ETH and other blockchain assets. Customers send to a wallet address.</span>
           </button>
           <button type="button" data-pick="bank"
-            class="flex flex-col items-start gap-2 rounded-lg border border-line bg-surface p-4 text-left hover:border-brass hover:bg-sunken transition-colors">
-            <span class="rounded-full bg-navy/10 p-2">
+            class="flex flex-col items-start gap-2 rounded-lg border border-line bg-surface p-4 text-left hover:border-accent hover:bg-sunken transition-colors">
+            <span class="rounded-full bg-primary/10 p-2">
               <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>
             </span>
             <span class="font-semibold">Bank Transfer</span>

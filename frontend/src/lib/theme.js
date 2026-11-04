@@ -1,6 +1,6 @@
 // Theme is applied before first paint by an inline script in each HTML file
 // (see <head>); this module only handles toggling and persistence.
-const KEY = 'zf-theme';
+const KEY = 'sh-theme';
 
 export function currentTheme() {
   return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';

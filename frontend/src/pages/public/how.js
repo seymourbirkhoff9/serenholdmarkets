@@ -3,7 +3,7 @@ import { html } from '../../lib/dom.js';
 
 const stage = (n, title, points) => html`
   <li class="grid gap-4 border-t border-line py-10 md:grid-cols-[14rem_1fr]" data-reveal>
-    <div><span class="figure text-4xl text-brass">${n}</span><h2 class="mt-2 font-serif text-2xl">${title}</h2></div>
+    <div><span class="figure text-4xl text-accent">${n}</span><h2 class="mt-2 font-serif text-2xl">${title}</h2></div>
     <ul class="grid gap-3 text-muted">${points.map((p) => html`<li class="max-w-prose">${p}</li>`)}</ul>
   </li>`;
 

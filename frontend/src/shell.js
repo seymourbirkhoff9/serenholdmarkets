@@ -10,6 +10,7 @@ import { openDialog, toastError } from './lib/ui.js';
 import { invalidate } from './lib/cache.js';
 import { session } from './session.js';
 import { cryptoTicker } from './pages/public/layout.js';
+import { wordmark } from './lib/brand.js';
 
 /**
  * Mounts the signed-in chrome around #outlet.
@@ -21,7 +22,7 @@ export function mountShell({ area, user, nav }) {
   const isAdmin = area === 'admin';
   render(root, html`
     <div id="progress" class="pointer-events-none fixed inset-x-0 top-0 z-[70] h-0.5 overflow-hidden" hidden aria-hidden="true">
-      <div class="h-full w-1/3 animate-[zf-progress_1.1s_ease-in-out_infinite] bg-brass"></div></div>
+      <div class="h-full w-1/3 animate-[sh-progress_1.1s_ease-in-out_infinite] bg-accent"></div></div>
     <a href="#outlet" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 btn-primary">Skip to content</a>
     ${user.impersonated_by ? html`
     <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 bg-pending px-4 py-2 text-center text-sm font-medium text-white" role="status">
@@ -30,31 +31,31 @@ export function mountShell({ area, user, nav }) {
       <button id="imp-exit" class="rounded bg-white/20 px-3 py-1 text-xs font-semibold hover:bg-white/30">Exit to console</button>
     </div>` : html`
     ${cryptoTicker()}`}
-    <div class="lg:grid lg:min-h-[calc(100vh-41px)] lg:grid-cols-[15.5rem_1fr]">
-      <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 -translate-x-full border-r border-line bg-surface transition-transform lg:static lg:w-auto lg:translate-x-0" aria-label="Main">
-        <div class="flex h-16 items-center gap-2.5 border-b border-line px-5">
-          <span class="grid h-8 w-8 place-items-center rounded bg-navy font-serif text-lg font-semibold text-navy-fg">Z</span>
-          <span class="leading-tight">
-            <span class="block font-semibold">Zenfort Markets</span>
-            <span class="block text-xs text-muted">${isAdmin ? 'Operations console' : 'Customer account'}</span>
-          </span>
+    <div class="lg:grid lg:min-h-[calc(100vh-41px)] lg:grid-cols-[17rem_1fr]">
+      <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 flex w-72 -translate-x-full flex-col overflow-y-auto bg-chrome text-chrome-fg shadow-2xl transition-transform duration-300 ease-out lg:sticky lg:top-0 lg:h-screen lg:w-auto lg:translate-x-0 lg:shadow-none" aria-label="Main">
+        <div class="flex h-20 items-center justify-between px-6">
+          <a href="${isAdmin ? '/admin.html' : '/app.html'}" class="rounded-lg">${wordmark({ tone: 'chrome', sub: isAdmin ? 'Operations' : 'Markets' })}</a>
+          <button id="menu-close" class="grid h-9 w-9 place-items-center rounded-full border border-white/15 lg:hidden" aria-expanded="true" aria-label="Close menu">
+            <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span></button>
         </div>
-        <nav class="grid gap-0.5 p-3 pl-3">
+        <p class="mx-6 mb-2 rounded-full bg-white/5 px-3 py-1 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-chrome-fg/60">${isAdmin ? 'Operations console' : 'Customer account'}</p>
+        <nav class="grid gap-1 p-4">
           ${nav.map((item) => item.section
-            ? html`<p class="mt-4 px-3 pb-1 text-xs font-semibold text-muted">${item.section}</p>`
-            : html`<a class="nav-link" href="${item.href}" data-match="${item.match}">
+            ? html`<p class="mt-5 px-4 pb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-chrome-fg/40">${item.section}</p>`
+            : html`<a class="side-link" href="${item.href}" data-match="${item.match}">
                 ${icon(item.icon)}<span>${item.label}</span>
                 ${item.badge ? html`<span class="badge" data-badge="${item.badge}" hidden></span>` : ''}
               </a>`)}
         </nav>
-        ${user.is_admin && !isAdmin && !user.impersonated_by ? html`<div class="border-t border-line p-3">
-          <a class="nav-link" href="/admin.html">${icon('shield')}<span>Operations console</span></a></div>` : ''}
+        ${user.is_admin && !isAdmin && !user.impersonated_by ? html`<div class="mt-auto border-t border-white/10 p-4">
+          <a class="side-link" href="/admin.html">${icon('shield')}<span>Operations console</span></a></div>` : ''}
       </aside>
-      <div id="scrim" class="fixed inset-0 z-30 bg-black/40 lg:hidden" hidden></div>
+      <div id="scrim" class="fixed inset-0 z-30 bg-chrome/50 backdrop-blur-sm lg:hidden" hidden></div>
 
       <div class="min-w-0">
-        <header class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-paper/90 px-4 backdrop-blur sm:px-6">
-          <button id="menu-btn" class="rounded p-2 text-muted hover:bg-sunken lg:hidden" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">${icon('menu')}</button>
+        <header class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-paper/85 px-4 backdrop-blur-md sm:px-6 lg:h-20">
+          <button id="menu-btn" class="grid h-10 w-10 place-items-center rounded-full border border-line bg-surface text-ink lg:hidden" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+            <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span></button>
           <div class="ml-auto flex items-center gap-1">
             ${languageButton()}
             <button id="theme-btn" class="rounded p-2 text-muted hover:bg-sunken hover:text-ink" aria-label="Switch colour theme">
@@ -95,7 +96,7 @@ export function mountShell({ area, user, nav }) {
   if (user.impersonated_by) wireImpersonation(user);
   else if (!user.terms_current) askForTerms();
   // Settings broadcasts profile changes (e.g. a new photo) so the header updates immediately.
-  window.addEventListener('zf:user-updated', (e) => render('#account-avatar', avatar(e.detail)));
+  window.addEventListener('sh:user-updated', (e) => render('#account-avatar', avatar(e.detail)));
   const stopPolling = startNotifications(area);
   return {
     setActive(path) {
@@ -124,6 +125,7 @@ function closeMenu() {
   $('#sidebar').classList.add('-translate-x-full');
   $('#scrim').hidden = true;
   $('#menu-btn').setAttribute('aria-expanded', 'false');
+  document.documentElement.style.overflow = '';
 }
 
 function wireChrome() {
@@ -131,8 +133,12 @@ function wireChrome() {
     $('#sidebar').classList.remove('-translate-x-full');
     $('#scrim').hidden = false;
     $('#menu-btn').setAttribute('aria-expanded', 'true');
+    document.documentElement.style.overflow = 'hidden';
+    $('#menu-close').focus({ preventScroll: true });
   });
   $('#scrim').addEventListener('click', closeMenu);
+  $('#menu-close').addEventListener('click', () => { closeMenu(); $('#menu-btn').focus({ preventScroll: true }); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#scrim').hidden === false) closeMenu(); });
 
   $('#theme-btn').addEventListener('click', (e) => {
     const t = toggleTheme();
@@ -152,7 +158,7 @@ function popover(btnSel, panelSel, onOpen) {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     const open = panel.hidden;
-    $$('[aria-expanded="true"]').forEach((b) => { if (b !== btn && b.id !== 'menu-btn') { b.setAttribute('aria-expanded', 'false'); $('#' + b.getAttribute('aria-controls')).hidden = true; } });
+    $$('[aria-expanded="true"]').forEach((b) => { if (b !== btn && b.id !== 'menu-btn' && b.getAttribute('aria-controls')) { b.setAttribute('aria-expanded', 'false'); $('#' + b.getAttribute('aria-controls')).hidden = true; } });
     panel.hidden = !open;
     btn.setAttribute('aria-expanded', String(open));
     if (open) onOpen?.();
@@ -212,7 +218,7 @@ function wireImpersonation(user) {
 function wireProgress() {
   const bar = $('#progress');
   let timer;
-  window.addEventListener('zf:busy', (e) => {
+  window.addEventListener('sh:busy', (e) => {
     clearTimeout(timer);
     // Only show for requests that take a noticeable time, to avoid flicker.
     if (e.detail > 0) timer = setTimeout(() => { bar.hidden = false; }, 150);
@@ -273,8 +279,8 @@ function startNotifications(area) {
       </div>
       <ul class="overflow-y-auto overscroll-contain">
         ${items.length ? items.map((n) => html`
-          <li class="flex items-start gap-2 border-b border-line/60 px-4 py-3 last:border-0 ${n.is_read ? '' : 'bg-brass/5'}">
-            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${n.is_read ? '' : 'bg-brass'}" ${n.is_read ? '' : html`aria-label="Unread"`}></span>
+          <li class="flex items-start gap-2 border-b border-line/60 px-4 py-3 last:border-0 ${n.is_read ? '' : 'bg-accent/5'}">
+            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${n.is_read ? '' : 'bg-accent'}" ${n.is_read ? '' : html`aria-label="Unread"`}></span>
             <a class="min-w-0 flex-1" href="${links[n.type] || '#/'}" data-open="${n.id}">
               <span class="block text-sm font-medium">${n.title}</span>
               <span class="block text-sm text-muted">${n.message}</span>

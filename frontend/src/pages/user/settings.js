@@ -134,7 +134,7 @@ export default async function settings(outlet) {
     render(outlet.querySelector('#photo-preview'), avatar(user, 'lg'));
     outlet.querySelector('#photo-label').textContent = user.avatar_url ? 'Change photo' : 'Add a photo';
     outlet.querySelector('[data-action="remove-photo"]').hidden = !user.avatar_url;
-    window.dispatchEvent(new CustomEvent('zf:user-updated', { detail: user }));
+    window.dispatchEvent(new CustomEvent('sh:user-updated', { detail: user }));
   };
   on(outlet, 'change', '#photo-input', async (e) => {
     const file = e.target.files?.[0];

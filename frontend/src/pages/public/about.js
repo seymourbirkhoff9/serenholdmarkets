@@ -13,6 +13,6 @@ contentPage({
       ${[['Professional review', 'Every deposit and payout is reviewed by trained operators, and every decision is recorded in our audit system.'],
          ['Transparent about risk', 'Returns are never presented as guaranteed. The Risk Disclosure is linked wherever money is committed.'],
          ['Privacy first', 'Identity documents are stored privately and opened only through short-lived links with enterprise-grade security.']]
-        .map(([t, d]) => html`<div class="border-l-2 border-brass pl-4"><dt class="font-semibold">${t}</dt><dd class="mt-1 text-muted">${d}</dd></div>`)}
+        .map(([t, d]) => html`<div class="border-l-2 border-accent pl-4"><dt class="font-semibold">${t}</dt><dd class="mt-1 text-muted">${d}</dd></div>`)}
     </dl></div>`,
 });
